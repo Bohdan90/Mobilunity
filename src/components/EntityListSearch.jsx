@@ -2,9 +2,7 @@ import React from "react";
 import {TextField} from "@material-ui/core";
 
 function EntityListSearch(props) {
-
-
-    return(
+    return (
         <TextField
             id="outlined-name"
             label="Filter"
@@ -15,4 +13,5 @@ function EntityListSearch(props) {
         />
     )
 }
+
 export default EntityListSearch;
