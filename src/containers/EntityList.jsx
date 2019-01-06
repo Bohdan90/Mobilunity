@@ -22,8 +22,8 @@ export class EntityList extends React.Component {
 
     onChangePage = async (event, page) => {
         if (this.state.currPage < page && this.state.allItems.results.length < ((page + 1) * this.state.rowsPerPage)) {
-          await  this.loadAdditionalItems(page)
-        }else {
+            await this.loadAdditionalItems(page)
+        } else {
             this.setState({currPage: page});
         }
     }
@@ -47,7 +47,7 @@ export class EntityList extends React.Component {
                 const response = await fetch(next)
                 const data = await response.json()
                 this.setState(prevState => ({
-                    loading:false,
+                    loading: false,
                     currPage: page,
                     allItems: {
                         ...prevState.allItems,

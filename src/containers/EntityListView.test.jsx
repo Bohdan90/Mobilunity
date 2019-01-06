@@ -2,8 +2,7 @@ import React from "react";
 import {shallow} from "enzyme";
 import EntityListView from "./EntityListView";
 import EntityPanel from "../components/EntityPanel";
-import EntityListSearch from "../components/EntityListSearch";
-import EntityListItem from "../components/EntityListItem";
+
 
 const initState = {
     currentItem: {},
