@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import './components/EntityList';
-import EntityList from "./components/EntityList";
+import './containers/EntityList';
+import EntityList from "./containers/EntityList";
 
 class App extends Component {
   render() {

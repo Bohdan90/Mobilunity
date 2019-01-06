@@ -1,8 +1,8 @@
 import React from "react";
-import EntityListItem from "./EntityListItem";
-import EntityListSearch from "./EntityListSearch";
+import EntityListItem from "../components/EntityListItem";
+import EntityListSearch from "../components/EntityListSearch";
 import EntityListView from "./EntityListView";
-import EntityReturnButton from "./EntityReturnButton";
+import EntityReturnButton from "../components/EntityReturnButton";
 
 export class EntityList extends React.Component {
     constructor(props) {
@@ -13,11 +13,10 @@ export class EntityList extends React.Component {
     }
 
 
-    componentDidMount() {
-        fetch('https://swapi.co/api/people/')
-            .then(response => response.json())
-            .then(data => this.setState({allItems: data}));
-
+    async componentDidMount() {
+        const response = await fetch('https://swapi.co/api/people/')
+        const data = await response.json()
+        this.setState({allItems: data})
     }
 
 
@@ -29,17 +28,14 @@ export class EntityList extends React.Component {
     }
 
 
-
-    handleChangeValue = e => {
-            let searchText = e.target.value;
-            if(this.timeout) clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-                fetch(`https://swapi.co/api/people?search=${searchText}`)
-                    .then(response => response.json())
-                    .then(data => this.setState({allItems: data}))
-            }, 500);
-
-
+    handleChangeValue = (e) => {
+        let searchText = e.target.value;
+        if (this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(async () => {
+            const response = await fetch(`https://swapi.co/api/people?search=${searchText}`)
+            const data = await response.json()
+            this.setState({allItems: data})
+        }, 500);
     }
 
     loadAdditionalItems() {
@@ -71,25 +67,23 @@ export class EntityList extends React.Component {
     }
 
 
-render()
-{
-    const {allItems, currPage, rowsPerPage, selectedItem, value} = this.state
-    return (
-        <>
-            {!selectedItem ?
-                //Вопрос с ключами. Если их не ставить - сыпятся ворнинги, как лучше сделать?
-                [<EntityListSearch key={0} value={value}
-                                   onChangeValue={this.handleChangeValue}/>,
-                    <EntityListItem key={1} selectItem={this.handleCellClick} allItems={allItems}
+    render() {
+        const {allItems, currPage, rowsPerPage, selectedItem, value} = this.state
+        return (
+            !selectedItem ?
+                <React.Fragment>
+                    <EntityListSearch value={value}
+                                      onChangeValue={this.handleChangeValue}/>
+                    <EntityListItem selectItem={this.handleCellClick} allItems={allItems}
                                     currPage={currPage}
                                     rowsPerPage={rowsPerPage} handleChangePage={this.onChangePage}
-                                    handleChangeRowsPerPage={this.changeRowsPerPage}/>] :
-                [<EntityReturnButton key={2} handleClick={this.handleCellClick}> Return </EntityReturnButton>,
-                    <EntityListView key={3} selectedItem={selectedItem}/>]
-            }
-        </>
-    )
-}
+                                    handleChangeRowsPerPage={this.changeRowsPerPage}/>
+                </React.Fragment> : <React.Fragment>
+                    <EntityReturnButton handleClick={this.handleCellClick}> Return </EntityReturnButton>
+                    <EntityListView selectedItem={selectedItem}/>
+                </React.Fragment>
+        )
+    }
 
 }
 

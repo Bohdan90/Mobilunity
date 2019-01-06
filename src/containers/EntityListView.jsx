@@ -1,5 +1,5 @@
 import React from "react";
-import CenteredTabs from "./EntityPanel"
+import CenteredTabs from "../components/EntityPanel"
 
 export class EntityListView extends React.Component {
     constructor(props) {
@@ -11,13 +11,16 @@ export class EntityListView extends React.Component {
         }
     }
 
+    isDate(value) {
+        let dateFormat = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+        return dateFormat.test(value);
+    }
 
-    handleChange = (currentInfo) => {
+    handleChange = async (currentInfo) => {
         const {currentItem} = this.state
-        //Большое нагромождение условий. Но возможны варианты когда элемент - ссылка, когда элемент - массив ссылок или когда элемент - не отформатированная дата
         if (currentInfo !== 'url' & currentItem[currentInfo].indexOf('http') !== -1 || Array.isArray(currentItem[currentInfo])) {
-            this.fetchInfo(currentItem[currentInfo])
-        } else if (currentInfo === 'created' || currentInfo === 'edited') {
+            await this.fetchInfo(currentItem[currentInfo])
+        } else if (this.isDate(currentItem[currentInfo])) {
             const date = new Date(currentItem[currentInfo]).toDateString()
             this.setState(prevState => ({
                 ...prevState,
@@ -31,20 +34,21 @@ export class EntityListView extends React.Component {
         }
     };
 
-    fetchInfo(links) {
+    async fetchInfo(links) {
         if (Array.isArray(links)) {
             const promises = links.map(url => fetch(url).then(response => response.json()));
-            Promise.all(promises).then(data => this.setState(prevState => ({
+            const data = await Promise.all(promises)
+            this.setState(prevState => ({
                 ...prevState,
                 currentInfo: data
-            })))
+            }))
         } else {
-            fetch(links)
-                .then(response => response.json())
-                .then(data => this.setState(prevState => ({
-                    ...prevState,
-                    currentInfo: data[Object.keys(data)[0]]
-                })))
+            const response = await fetch(links)
+            const data = await response.json()
+            this.setState(prevState => ({
+                ...prevState,
+                currentInfo: data[Object.keys(data)[0]]
+            }))
         }
     }
 
