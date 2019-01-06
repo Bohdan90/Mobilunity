@@ -5,9 +5,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
 
-function CenteredTabs(props) {
+function EntityPanel(props) {
     function TabContainer(props) {
-        //Смущает это условие. Но возможен вариант когда элемент просто значение, возможен вариант когда элемент массив объектов
         if (!Array.isArray(props.children)) {
             return (
                 <Typography key={props.children} component="div" style={{padding: 8 * 3}}>
@@ -41,4 +40,4 @@ function CenteredTabs(props) {
     );
 }
 
-export default CenteredTabs;
+export default EntityPanel;

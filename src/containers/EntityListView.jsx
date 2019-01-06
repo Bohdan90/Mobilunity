@@ -1,5 +1,5 @@
 import React from "react";
-import CenteredTabs from "../components/EntityPanel"
+import EntityPanel from "../components/EntityPanel"
 
 export class EntityListView extends React.Component {
     constructor(props) {
@@ -61,7 +61,7 @@ export class EntityListView extends React.Component {
 
     render() {
         return (
-            <CenteredTabs {...this.state} handleChange={this.handleChange} selectedTab={this.selectedTab}/>
+            <EntityPanel {...this.state} handleChange={this.handleChange} selectedTab={this.selectedTab}/>
         )
 
     }
