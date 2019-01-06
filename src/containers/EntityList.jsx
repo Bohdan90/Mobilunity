@@ -14,6 +14,10 @@ export class EntityList extends React.Component {
 
 
     async componentDidMount() {
+        await this.loadInitItems()
+    }
+
+    async loadInitItems() {
         const response = await fetch('https://swapi.co/api/people/')
         const data = await response.json()
         this.setState({allItems: data})
@@ -63,11 +67,12 @@ export class EntityList extends React.Component {
         this.setState({rowsPerPage: event.target.value});
     };
 
-    handleCellClick = rowItem => {
+    handleCellClick = async (rowItem) => {
         if (!this.state.selectedItem) {
             this.setState({selectedItem: rowItem})
         } else {
-            this.setState({selectedItem: null})
+            this.setState({selectedItem: null, currPage: 0})
+            await this.loadInitItems()
         }
     }
 

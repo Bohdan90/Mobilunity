@@ -36,9 +36,9 @@ describe("EntityList rendering", () => {
         const newPage = 7;
         const wrapper = shallow(<EntityList {...initState}/>);
         wrapper.setState({allItems: {results: ['frstResult']}})
-        const instance = wrapper.instance().onChangePage
-        await instance(null, newPage);
-        expect(wrapper.instance().state.currPage).toEqual(newPage);
+        wrapper.instance().loadAdditionalItems = jest.fn()
+        await wrapper.instance().onChangePage(null, newPage)
+        expect(wrapper.instance().loadAdditionalItems).toHaveBeenCalled()
     });
 
 });
