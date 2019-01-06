@@ -8,7 +8,7 @@ export class EntityList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            allItems: [], selectedItem: null, currPage: 0, count: 0, rowsPerPage: 10
+            allItems: [], selectedItem: null, currPage: 0, count: 0, rowsPerPage: 10, loading: false
         }
     }
 
@@ -22,9 +22,10 @@ export class EntityList extends React.Component {
 
     onChangePage = async (event, page) => {
         if (this.state.currPage < page && this.state.allItems.results.length < ((page + 1) * this.state.rowsPerPage)) {
-          await  this.loadAdditionalItems()
+          await  this.loadAdditionalItems(page)
+        }else {
+            this.setState({currPage: page});
         }
-        this.setState({currPage: page});
     }
 
 
@@ -38,18 +39,23 @@ export class EntityList extends React.Component {
         }, 500);
     }
 
-    async loadAdditionalItems() {
-        const {next} = this.state.allItems
-        if (next) {
-            const response = await fetch(next)
-            const data = await response.json()
-               this.setState(prevState => ({
+    async loadAdditionalItems(page) {
+        if (!this.state.loading) {
+            this.setState({...this.state, loading: true})
+            const {next} = this.state.allItems
+            if (next) {
+                const response = await fetch(next)
+                const data = await response.json()
+                this.setState(prevState => ({
+                    loading:false,
+                    currPage: page,
                     allItems: {
                         ...prevState.allItems,
                         next: data.next,
                         results: [...this.state.allItems.results, ...data.results]
                     }
                 }))
+            }
         }
     }
 
